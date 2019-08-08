@@ -9,7 +9,7 @@
     <script type="" src="jquery.js"></script>
     <style>
         canvas {
-            border: 1px solid black;
+            border: 10px solid rgb(97, 17, 17);
             padding-right: 0;
             padding-left: 0;
             margin-left: auto;
@@ -17,20 +17,56 @@
             display: block;
             background-color: white;
         }
-        button{
-            padding-right: 0;
-            padding-left: 0;
-            margin-left: auto;
-            margin-right: auto;
-            display: block;
-        }
+
+
+        .button {
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    padding: 12px 24px;
+    border: 1px solid #a12727;
+    border-radius: 70px;
+    background: #ff4a4a;
+    background: -webkit-gradient(linear, left top, left bottom, from(#ff4a4a), to(#992727));
+    background: -moz-linear-gradient(top, #ff4a4a, #992727);
+    background: linear-gradient(to bottom, #ff4a4a, #992727);
+    font: normal normal bold 29px arial;
+    color: #ffffff;
+    text-decoration: none;
+}
+.button:hover,
+.button:focus {
+    background: #ff5959;
+    background: -webkit-gradient(linear, left top, left bottom, from(#ff5959), to(#b62f2f));
+    background: -moz-linear-gradient(top, #ff5959, #b62f2f);
+    background: linear-gradient(to bottom, #ff5959, #b62f2f);
+    color: #ffffff;
+    text-decoration: none;
+}
+.button:active {
+    background: #982727;
+    background: -webkit-gradient(linear, left top, left bottom, from(#982727), to(#982727));
+    background: -moz-linear-gradient(top, #982727, #982727);
+    background: linear-gradient(to bottom, #982727, #982727);
+}
+
     </style>
 
 </head>
 
 <body>
 
-    <canvas id="canvas" width="800" height="500">
+    <div>
+        <center>
+            <canvas id="canvas" width="800" height="500">
+        </center>
+    </div>
+    <div>
+        <center>
+            <button class="button" id=startGame>Start Game</button>
+            <button class="button" id=Restart onclick="location.reload()">Restart Game</button>
+        </center>
+    </div>
 
 </body>
 <script>
@@ -234,8 +270,10 @@
             gameLoop = setInterval(animate, 200);
             return gameLoop;
         }
-       
-        startGame()
+        $("#startGame").click(function () {
+            startGame();
+        });
+
 
     })
 </script>
