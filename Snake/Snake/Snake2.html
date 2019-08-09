@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script type="" src="jquery.js"></script>
+    <style>
+        canvas {
+            border: 10px solid rgb(97, 17, 17);
+            padding-right: 0;
+            padding-left: 0;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+            background-color: white;
+        }
+
+
+        .button {
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    padding: 12px 24px;
+    border: 1px solid #a12727;
+    border-radius: 70px;
+    background: #ff4a4a;
+    background: -webkit-gradient(linear, left top, left bottom, from(#ff4a4a), to(#992727));
+    background: -moz-linear-gradient(top, #ff4a4a, #992727);
+    background: linear-gradient(to bottom, #ff4a4a, #992727);
+    font: normal normal bold 29px arial;
+    color: #ffffff;
+    text-decoration: none;
+}
+.button:hover,
+.button:focus {
+    background: #ff5959;
+    background: -webkit-gradient(linear, left top, left bottom, from(#ff5959), to(#b62f2f));
+    background: -moz-linear-gradient(top, #ff5959, #b62f2f);
+    background: linear-gradient(to bottom, #ff5959, #b62f2f);
+    color: #ffffff;
+    text-decoration: none;
+}
+.button:active {
+    background: #982727;
+    background: -webkit-gradient(linear, left top, left bottom, from(#982727), to(#982727));
+    background: -moz-linear-gradient(top, #982727, #982727);
+    background: linear-gradient(to bottom, #982727, #982727);
+}
+
+    </style>
+
+</head>
+
+<body>
+
+    <div>
+        <center>
+            <canvas id="canvas" width="800" height="500">
+        </center>
+    </div>
+    <div>
+        <center>
+            <button class="button" id=startGame>Start Game</button>
+            <button class="button" id=Restart onclick="location.reload()">Restart Game</button>
+        </center>
+    </div>
+
+</body>
+<script>
+    $(function () {
+        var canves = document.getElementById('canvas');
+        var ctx = canves.getContext('2d')
+
+        function line() {
+            ctx.fillStyle = "white"
+            for (var i = 0; i < 35; i++) { //通过循环画网格
+
+                ctx.moveTo(0, 25 + i * 25);
+                ctx.lineTo(800, 25 + i * 25);
+                ctx.stroke();
+                ctx.moveTo(25 + i * 25, 0);
+                ctx.lineTo(25 + i * 25, 800);
+                ctx.stroke();
+            }
+        }
+
+
+        function Rect(x, y, w, h, color) {
+            this.x = x;
+            this.y = y;
+            this.w = w;
+            this.h = h;
+            this.color = color;
+        }
+        Rect.prototype.draw = function () {
+            ctx.beginPath();
+            ctx.fillStyle = this.color;
+            ctx.rect(this.x, this.y, this.w, this.h);
+            ctx.fill();
+            ctx.stroke();
+        }
+
+        // var SnakeX = 250;
+        // var SnakeY = 250;
+        // var SnakeDeltaX = 0;
+        // var SnakeDeltaY = 0;
+        var speed = 25;
+
+        function Snake() {
+            var snakeArray = [];
+
+            for (var i = 0; i < 4; i++) {
+                var rect = new Rect(i * 25, 0, 25, 25, "gray"); //蛇的本體四個灰色方塊
+                snakeArray.splice(0, 0, rect); //畫完一個 從第0個位置 再加上一個方塊
+            }
+            var head = snakeArray[0]; //把陣列第一個設定為蛇的頭
+            head.color = "red"; //頭設為紅色
+            this.head = snakeArray[0]; //存取蛇頭的座標
+            this.snakeArray = snakeArray; //整隻蛇
+            //初始位置向右(keyCode右)
+            this.direction = 39;
+        }
+        Snake.prototype.draw = function () {
+            for (var i = 0; i < this.snakeArray.length; i++) {
+                this.snakeArray[i].draw(); //畫蛇
+            }
+        }
+        var snake = new Snake()
+
+        function getNuber(x) {
+            return Math.floor(Math.random() * x + 1); //產生亂數
+        }
+        var food = new drawNewFood()
+
+        function drawNewFood() {
+            // if (SnakeX == num && SnakeY == num2)        
+            var num = getNuber(31);
+            var num2 = getNuber(19);
+            var rect = new Rect(num * 25, num2 * 25, 25, 25, "blue"); //取的亂數 食物位置
+            // if (SnakeX == rect.num * 25 && SnakeY == rect.num2 * 25) {
+            //     rect = new Rect(num * 25, num2 * 25, 25, 25, "blue");
+            // }
+            return rect
+        }
+
+        // function moveSnake() {
+        //     document.onkeydown = function (evt) {
+        //         if (evt.keyCode == 37 && SnakeDeltaX > -25) {
+        //             SnakeDeltaX = -1 * speed;
+        //             SnakeDeltaY = 0;
+        //         } else if (evt.keyCode == 38 && SnakeDeltaY > -25) {
+        //             SnakeDeltaY = -1 * speed;
+        //             SnakeDeltaX = 0;
+        //         } else if (evt.keyCode == 39 && SnakeDeltaX < 25) {
+        //             SnakeDeltaX += speed;
+        //             SnakeDeltaY = 0;
+        //         } else if (evt.keyCode == 40 && SnakeDeltaY < 25) {
+        //             SnakeDeltaY += speed;
+        //             SnakeDeltaX = 0;
+        //         }
+        //         // console.log(speed);
+        //         //  console.log(SnakeDeltaX);
+        //         //  console.log(SnakeDeltaY);
+        //     };
+        //     SnakeX += SnakeDeltaX;
+        //     SnakeY += SnakeDeltaY;
+        //     // console.log(SnakeX);
+        //     // console.log(SnakeY);
+
+        // }
+        Snake.prototype.move = function () {
+
+            //蛇 移動方式
+            var rect = new Rect(this.head.x, this.head.y, this.head.w, this.head.h, "gray");
+            this.snakeArray.splice(1, 0, rect); //不斷地插入方塊到蛇頭的位置
+
+            if (isEat()) {
+                food = new drawNewFood(); //true
+            } else {
+                this.snakeArray.pop(); //判斷沒吃到 砍掉尾巴(最後一個元素) false
+            }
+            //設置蛇頭的運動方向，37 左(-w 寬往負的)，38 上(-h 高往負的)，39 右，40 下
+            switch (this.direction) {
+                case 37:
+                    this.head.x -= this.head.w
+                    break;
+                case 38:
+                    this.head.y -= this.head.h
+                    break;
+                case 39:
+                    this.head.x += this.head.w
+                    break;
+                case 40:
+                    this.head.y += this.head.h
+                    break;
+                default:
+                    break;
+            }
+            // gameover判定
+            // 撞墻
+            if (this.head.x > canvas.width || this.head.x < 0 || this.head.y > canvas.height || this.head
+                .y < 0) {
+                clearInterval(gameLoop);
+                alert("gameover");
+            }
+            //撞到自己 蛇頭位置=身體陣列位置
+            for (var i = 1; i < this.snakeArray.length; i++) {
+                if (this.snakeArray[i].x == this.head.x && this.snakeArray[i].y == this.head.y) {
+                    clearInterval(gameLoop);
+                    alert("gameover");
+
+                }
+            }
+        }
+        document.onkeydown = function (e) {
+            var ev = e || window.event;
+            switch (ev.keyCode) {
+                case 37: {
+                    if (snake.direction !== 39) {
+                        snake.direction = 37;
+                    }
+                    break;
+                }
+                case 38: {
+                    if (snake.direction !== 40) {
+                        snake.direction = 38;
+                    }
+                    break;
+                }
+                case 39: {
+                    if (snake.direction !== 37) {
+                        snake.direction = 39;
+                    }
+                    break;
+                }
+                case 40: {
+                    if (snake.direction !== 38) {
+                        snake.direction = 40;
+                    }
+                    break;
+                }
+            }
+            ev.preventDefault();
+        }
+
+        function isEat() {
+            if (snake.head.x == food.x && snake.head.y == food.y) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canves.width, canves.height);
+            // drawSnake();
+            //moveSnake();
+            line();
+            food.draw();
+            snake.move();
+            snake.draw();
+
+        }
+        var gemeLoop
+
+        function startGame() {
+            gameLoop = setInterval(animate, 200);
+            return gameLoop;
+        }
+        $("#startGame").click(function () {
+            startGame();
+        });
+
+
+    })
+</script>
+
+</html>
